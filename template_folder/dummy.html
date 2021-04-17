@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <form action="yourfile">
+      <br /><br />
+      Select image to upload:<br />
+      <input
+        type="file"
+        onchange="uploadImage(event)"
+        name="fileToUpload"
+        id="fileToUpload"
+      /> <br/>
+      <br /><br />
+      
+     <select onchange="dropDown(event)" style="width:220px;" name="droplist" method="GET" action="/">
+    {% for droplist in droplist %}
+        <option style="width:220px;" value="{{droplist}}" SELECTED>
+        {{droplist}}
+        </option>"
+    {% endfor %}
+    </select>
+          
+    </form>
+    <script>
+      function uploadImage(e) {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        let fileData;
+        reader.readAsDataURL(file);
+        reader.onload = _event => {
+          fileData = reader.result;
+          $.ajax({
+            url: "http://127.0.0.1:5000/onBrowseCardClassifier",
+            type: "POST",
+            dataType: "json",
+            data: { data: JSON.stringify(fileData)},
+            success: function(ews) {
+              alert(JSON.stringify(ews.data));
+            }
+          });
+        };
+      }
+      
+      function dropDown(e) {
+        console.log(e.target.value)
+        let file = e.target.value;
+          $.ajax({
+            url: "http://127.0.0.1:5000/onDropCardClassifier",
+            type: "POST",
+            dataType: "json",
+            data: { data: file},
+            success: function(ews) {
+              alert(JSON.stringify(ews.data));
+            }
+          });
+        
+      }
+    </script>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+  </body>
+</html>
